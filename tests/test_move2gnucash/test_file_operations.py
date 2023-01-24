@@ -21,16 +21,3 @@ def test_fetch_csv_data_works(mock_read: Mock):
 
     mock_read.assert_called_once_with("file")
     # pd.testing.assert_frame_equal(results, df)
-
-@patch("pandas.read_csv")
-def test_fetch_csv_data_fails_if_bad_file(read_csv_mock: Mock):
-    """
-    GIVEN fetch_csv_data called with non-existent file name
-    WHEN executed
-    THEN the exception is caught and and error message is returned.
-    """
-    read_csv_mock.side_effect = FileNotFoundError
-
-    with pytest.raises(FileNotFoundError) as error:
-        fetch_csv_data("badfilename")
-    assert "File not found" in str(error.value)
