@@ -23,7 +23,7 @@ Pick a date to mark the beginning of which Quicken transactions you wish to migr
 
 With non-investment accounts, I chose 1 January 2017 as the start date, and so I created a balances file by exporting to CSV a Quicken Net Worth report containing all accounts I was transferring except Investment accounts. I then removed the top header lines (except the date), moved the labels from the first column to the second column, and removed the the other unnecessary formatting lines. In the end, the format of your file should look like this sample:
 
-|12/31/2016||
+|Accounts|12/31/2016|
 |---|---|
 |Assets||
 |Cash||
@@ -62,7 +62,7 @@ If you do change these, make sure to also change the _Total_ line in the file be
 
 Let's say we want to change _Cash_ to _Current Assets_, the total line should then read _Total Current Assets_. Each placeholder account requires a total line. Please note, the numeric value associated with the total line is ignored, so feel free to remove those. As another example, the _Assets_ section could be reworked:
 
-|12/31/2016||
+|Accounts|12/31/2016|
 |---|---|
 |Assets||
 |Current Assets||
@@ -85,7 +85,9 @@ Let's say we want to change _Cash_ to _Current Assets_, the total line should th
 
 ### Transaction Data
 
-Again, Quicken (and perhaps other personal finance programs) will export extraneous data that must be removed. The 
+Again, Quicken (and perhaps other personal finance programs) will export extraneous data that must be removed. The csv file(s) will need to be cleaned up prior to use.
+
+TODO: Finish this documenting.
 
 ## Regarding the term: "Splits"
 
@@ -118,9 +120,11 @@ In a double entry accounting system, the debits and credits must balance.
 
 ## Initial To-Do
 
-- [ ] Module _opening_book_ from account balances file.
-- [ ] Module for reading csv file and returning a Pandas DataFrame.
+- [ ] File operations module to:
+  - [X] generic reading of csv file contents into and returning a Pandas DataFrame.
+- [ ] Module to prepare transactions for addition to GnuCash book.
   - [ ] Create Note/Memos field based on existing notes and tags.
   - [ ] Identify Quicken split transaction.
 - [ ] Module to add top level account names.
 - [ ] Module to create the basic GnuCash book.
+  - [ ] Module _opening_book_ to from account balances file.
