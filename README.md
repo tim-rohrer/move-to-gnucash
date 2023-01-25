@@ -1,4 +1,4 @@
-# _MoveToGnuCash_
+# _Move2GnuCash_
 
 Uses csv-exported from apps, initially Quicken, to create a GnuCash book. CSV data is preferred because it is more common than QIF or OFX/QFX, at least with Quicken for Mac.
 
@@ -6,7 +6,7 @@ Uses csv-exported from apps, initially Quicken, to create a GnuCash book. CSV da
 
 Although this is a complete new app, `csv2cash` was used to study approach to the problem. If it weren't for a few shortcomings (most related to features needed for my Quicken data), `csv2cash` would have likely been sufficient.
 
-One area _MoveToGnuCash_ will attempt to diverge from `csv2cash` is that the existing account and category names will be used to map to top-level accounts (Income, Expense, etc). If realized, this would preclude the end user from having to create a translation file to make these identifications. However, it does mean the end user needs to get their data in the desired form inside of Quicken.
+One area _Move2GnuCash_ will attempt to diverge from `csv2cash` is that the existing account and category names will be used to map to top-level accounts (Income, Expense, etc). If realized, this would preclude the end user from having to create a translation file to make these identifications. However, it does mean the end user needs to get their data in the desired form inside of Quicken.
 
 ## Dependencies
 
@@ -15,7 +15,7 @@ One area _MoveToGnuCash_ will attempt to diverge from `csv2cash` is that the exi
 
 ## Exports from Quicken
 
-_MoveToGnuCash_ requires a minimum of two files from Quicken for each import process. Because exported CSV files from Quicken contain a varying number of extraneous lines and comments, these will have to be edited to get to final form.
+_Move2GnuCash_ requires a minimum of two files from Quicken for each import process. Because exported CSV files from Quicken contain a varying number of extraneous lines and comments, these will have to be edited to get to final form.
 
 ### Account Balances
 
@@ -50,7 +50,7 @@ With non-investment accounts, I chose 1 January 2017 as the start date, and so I
 | - Total Loan|-10650|
 |Total Liabilities|-11623|
 
-_MoveToGnuCash_ function `opening_book` retrieves the date (balances as of close of business) from the first line. The second line, because it has no associated figure in the second column, will be created as a [placeholder account](https://www.gnucash.org/docs/v4/C/gnucash-help/acct-create.html#accts-placeholder) and will be the parent of the next account created, and so on, until the accounts containing transactions are created (the hyphens will be removed).
+_Move2GnuCash_ function `opening_book` retrieves the date (balances as of close of business) from the first line. The second line, because it has no associated figure in the second column, will be created as a [placeholder account](https://www.gnucash.org/docs/v4/C/gnucash-help/acct-create.html#accts-placeholder) and will be the parent of the next account created, and so on, until the accounts containing transactions are created (the hyphens will be removed).
 
 The above list of balances will result in an initial [Chart of Accounts](https://www.gnucash.org/docs/v4/C/gnucash-help/chart-create.html) shown here in this figure.
 
@@ -58,7 +58,7 @@ The `opening_book` function will also create an __Equity__ account with a sub-ac
 
 Before running `opening_book`, you may want to use the opening balances file to adjust the account structure. For example, GnuCash typically uses __Current Assets__, __Fixed Assets__ and __Investments__ as subt-accounts under __Assets__.
 
-If you do change these, make sure to also change the _Total_ line in the file because that is how _MoveToGnuCash_ knows when to jump back up the account tree.
+If you do change these, make sure to also change the _Total_ line in the file because that is how _Move2GnuCash_ knows when to jump back up the account tree.
 
 Let's say we want to change _Cash_ to _Current Assets_, the total line should then read _Total Current Assets_. Each placeholder account requires a total line. Please note, the numeric value associated with the total line is ignored, so feel free to remove those. As another example, the _Assets_ section could be reworked:
 
