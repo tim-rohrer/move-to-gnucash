@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 pandas = "*"
+move2gnucash = {editable = true, path = "."}
 
 [dev-packages]
 pytest = "*"

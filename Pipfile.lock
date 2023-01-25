@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2e93882e0df9c1f028882a76bdbf0bc0476df0b7781540af8b31abecc7f6f3b0"
+            "sha256": "aea915e6f994eb0913f6927cfaec4cd409c0785942e5f0db16a5466e267f94f5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,10 @@
         ]
     },
     "default": {
+        "move2gnucash": {
+            "editable": true,
+            "path": "."
+        },
         "numpy": {
             "hashes": [
                 "sha256:0044f7d944ee882400890f9ae955220d29b33d809a038923d88e4e01d652acd9",

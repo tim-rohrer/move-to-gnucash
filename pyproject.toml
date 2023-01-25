@@ -1,5 +1,4 @@
 [project]
-
 name = "move2gnucash"
 version = "0.1.0"
 description = "Create (or update) an initial GnuCash book from csv data, typically Quicken"
@@ -7,7 +6,8 @@ readme = "README.md"
 requires-python = ">=3.7"
 license = {file = "LICENSE.txt"}
 keywords = ["personal finance", "GnuCash", "csv migration"]
-url = "https://github.com/tim-rohrer/move2gnucash"
+[project-urls]
+"Homepage" = "https://github.com/tim-rohrer/move2gnucash"
 authors = [{name = "Tim Rohrer"}]
 classifiers = [
   "Development Status :: 3 - Alpha", 
