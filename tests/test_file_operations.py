@@ -1,6 +1,5 @@
 from unittest.mock import patch, Mock
 
-import pytest
 import pandas as pd
 
 # import move2gnucash.file_operations
