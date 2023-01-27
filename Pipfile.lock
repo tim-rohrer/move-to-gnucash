@@ -329,13 +329,6 @@
             "markers": "python_full_version >= '3.7.2'",
             "version": "==2.15.10"
         },
-        "pylint-pytest": {
-            "hashes": [
-                "sha256:fb20ef318081cee3d5febc631a7b9c40fa356b05e4f769d6e60a337e58c8879b"
-            ],
-            "index": "pypi",
-            "version": "==1.1.2"
-        },
         "pytest": {
             "hashes": [
                 "sha256:c7c6ca206e93355074ae32f7403e8ea12163b1163c976fee7d4d84027c162be5",
