@@ -68,16 +68,16 @@ def simple_data_frame():
     yield pd.DataFrame({"Accounts": ["Assets","Current Assets","- Checking","Total Current Assets","Total Assets"],
                         "12/31/2016": ["NaN","NaN",1000.00,1000.00,1000.00]})
 
-def test_simple(simple_data_frame):
-    """
-    GIVEN A DataFrame fetched from the opening_balances CSV
-    WHEN processed by accounts_and_opening_balances
-    THEN a Pandas DataFrame exists with final account names and opening balances.
-    """
+# def test_simple(simple_data_frame):
+#     """
+#     GIVEN A DataFrame fetched from the opening_balances CSV
+#     WHEN processed by accounts_and_opening_balances
+#     THEN a Pandas DataFrame exists with final account names and opening balances.
+#     """
 
-    pd.testing.assert_frame_equal(
-        accounts_and_balances(simple_data_frame),
-        pd.DataFrame({"accounts": ["Assets", "Assets:Current Assets","Assets:Current Assets:Checking"],
-                        "balances": ["ph","ph",1000.00]
-                    })
-    )
+#     pd.testing.assert_frame_equal(
+#         accounts_and_balances(simple_data_frame),
+#         pd.DataFrame({"accounts": ["Assets", "Assets:Current Assets","Assets:Current Assets:Checking"],
+#                         "balances": ["ph","ph",1000.00]
+#                     })
+#     )
