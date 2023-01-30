@@ -18,7 +18,9 @@ def create_gnucash_book(filename: str, currency_str: str = "USD", overwrite=Fals
 
 
 def create_accounts(book: Book, accounts_to_add):
-    """Add accounts and save book."""
+    """Add accounts and save book.
+    Sets chart of accounts hierarchy.
+    """
     for account in accounts_to_add:
         name, account_type, parent, commodity, placeholder = account.values()
         parent_acct = book.accounts(fullname=parent) if parent != "root" else book.root_account
