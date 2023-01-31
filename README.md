@@ -121,9 +121,10 @@ In a double entry accounting system, the debits and credits must balance.
 ## Initial To-Do
 
 -   [x] Read generic csv file contents into a Pandas DataFrame.
--   [ ] Create GnuCash book with accounts and opening balances transaction fixtures.
+
+-   [x] Create GnuCash book with accounts and opening balances transaction fixtures.
     -   [x] Write account list to file.
-    -   [ ] Write transactions list to file.
+    -   [x] Write transactions list to file.
 -   [ ] Map Opening Balances (Net Worth) DataFrame to:
     -   [ ] Accounts list.
     -   [ ] Opening Balances transactions list
