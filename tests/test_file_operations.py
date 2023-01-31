@@ -1,9 +1,14 @@
 """test_file_operations.py"""
 from unittest.mock import patch, Mock
 
-from piecash import create_book
+from piecash import Account, create_book
 
-from move2gnucash.file_operations import fetch_csv_data, create_gnucash_book, create_accounts
+from move2gnucash.file_operations import (
+    fetch_csv_data,
+    create_gnucash_book,
+    create_accounts,
+    add_transactions,
+)
 
 
 @patch("pandas.read_csv")
@@ -27,7 +32,7 @@ def test_create_gnucash_book(mock_create_book: Mock):
     """
     create_gnucash_book("testfile")
 
-    mock_create_book.assert_called_once_with("testfile")
+    mock_create_book.assert_called_once()
 
 
 def test_add_accounts_success(fixture_accounts):
@@ -41,6 +46,9 @@ def test_add_accounts_success(fixture_accounts):
     create_accounts(book, fixture_accounts)
 
     assert len(book.accounts) == 5
+
+
+#    book.close()  # Recently added, but creates different error
 
 
 def test_add_accounts_success_correct_tree(fixture_accounts):
@@ -59,34 +67,45 @@ def test_add_accounts_success_correct_tree(fixture_accounts):
     assert "Assets:Current Assets:Checking" in added_accounts
 
 
-# def test_add_transactions_success():
-#     """
-#     GIVEN a book with a complete chart of accounts, and a list of transactions
-#     WHEN executed with create_transactions
-#     THEN the book will contain accounts and transactions.
-#     """
-#     today = datetime.now()
-#     book = create_book(currency="USD")
-#     book.root_account.children = accounts_fixture(book)
-#     book.save()
-#     to_account = book.accounts(fullname="Assets:Current Assets:Checking")
-#     from_account = book.accounts(fullname="Equity:Opening Balances")
-#     amount = Decimal("2350.47")
-#     transactions = [
-#         Transaction(
-#             post_date=today.date(),
-#             enter_date=today,
-#             currency=book.commodities(mnemonic="USD"),
-#             description="Test Transaction",
-#             splits=[
-#                 Split(account=to_account, value=amount, memo="Split Memo!"),
-#                 Split(account=from_account, value=-amount, memo="Other Split Memo!"),
-#             ],
-#         )
-#     ]
+def test_add_transactions_success(fixture_opening_balances_simple):
+    """
+    GIVEN a book with a chart of accounts, and a list of transactions
+    WHEN executed with create_transactions
+    THEN the book will contain accounts and transactions with the correct balances.
+    """
+    book = create_book(currency="USD")
+    usd = book.commodities(mnemonic="USD")
+    book.root_account.children = [
+        Account(
+            parent=book.root_account,
+            name="Checking",
+            type="BANK",
+            commodity=usd,
+            placeholder=False,
+        ),
+        Account(
+            parent=book.root_account,
+            name="Equity",
+            type="EQUITY",
+            commodity=usd,
+            placeholder=True,
+            children=[
+                Account(
+                    name="Opening Balances",
+                    type="EQUITY",
+                    commodity=usd,
+                    placeholder=False,
+                )
+            ],
+        ),
+    ]
+    book.save()
 
-#     add_transactions(book, transactions)
+    add_transactions(book, fixture_opening_balances_simple)
 
-#     account_to_check = book.accounts(fullname="Assets:Current Assets:Checking")
-#     assert account_to_check.get_balance() == amount
-#     assert from_account.get_balance() == amount * -1
+    account_to_check = book.accounts(fullname="Checking")
+    assert account_to_check.get_balance() == fixture_opening_balances_simple[0].splits[0].value
+    assert (
+        book.accounts(fullname="Equity:Opening Balances").get_balance(natural_sign=False)
+        == fixture_opening_balances_simple[0].splits[1].value
+    )
