@@ -12,6 +12,7 @@ piecash = "*"
 [dev-packages]
 pytest = "*"
 black = "*"
+freezegun = "*"
 
 [requires]
 python_version = "3.11"
