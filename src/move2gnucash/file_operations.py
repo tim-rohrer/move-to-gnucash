@@ -19,7 +19,7 @@ def fetch_csv_data(file_to_open):
 
 def create_gnucash_book(filename: str, currency_str: str = "USD", overwrite=False):
     """Wrapper to create_book with select defaults."""
-    create_book(filename, currency=create_currency_from_ISO(currency_str), overwrite=overwrite)
+    return create_book(filename, currency=currency_str, overwrite=overwrite)
 
 
 def create_accounts(book: Book, accounts_list):

@@ -21,34 +21,38 @@ _Move2GnuCash_ requires a minimum of two files from Quicken for each import proc
 
 Pick a date to mark the beginning of which Quicken transactions you wish to migrate. GnuCash wants to have the Opening Balances as of that date for each account. For example, I conducted my migration using two runs, the first being for non-investing accounts, and the second for investing accounts. Each process had different start dates.
 
-With non-investment accounts, I chose 1 January 2017 as the start date, and so I created a balances file by exporting to CSV a Quicken Net Worth report containing all accounts I was transferring except Investment accounts. I then removed the top header lines (except the date), moved the labels from the first column to the second column, and removed the the other unnecessary formatting lines. In the end, the format of your file should look like this sample:
+With non-investment accounts, I chose 1 January 2017 as the start date, and so I created a balances file by exporting to CSV a Quicken Net Worth report containing all accounts I was transferring except Investment accounts.
 
-| Accounts            | 12/31/2016 |
-| ------------------- | ---------- |
-| Assets              |            |
-| Cash                |            |
-| - Cash              | 77.12      |
-| - Checking One      | 440.84     |
-| - Checking Two      | 235.38     |
-| - Total Cash        | 753.34     |
-| Savings             |            |
-| - Spouse Savings    | 987.12     |
-| - Family Savings    | 3250       |
-| - Total Savings     | 4237.12    |
-| Property            |            |
-| - 2012 Silverado    | 30975      |
-| - 2012 Camper       | 0          |
-| - Total Property    | 39975      |
-| Total Assets        | 44965.46   |
-| Liabilities         |            |
-| Credit Card         |            |
-| - Apple Card        | 0          |
-| - Credit Card       | -973.4     |
-| - Total Credit Card | -973.4     |
-| Loan                |            |
-| - Student Loan      | -10500     |
-| - Total Loan        | -10650     |
-| Total Liabilities   | -11623     |
+**See `sample_balances_user.csv` for how to format an input file for this first of _move2gnucash_**. A future version might see more automated file handling.
+
+~~I then removed the top header lines (except the date), moved the labels from the first column to the second column, and removed the the other unnecessary formatting lines. In the end, the format of your file should look like this sample:~~
+
+| ~~                  | Accounts | 12/31/2016 |
+| ------------------- | -------- | ---------- |
+| Assets              |          |
+| Cash                |          |
+| - Cash              | 77.12    |
+| - Checking One      | 440.84   |
+| - Checking Two      | 235.38   |
+| - Total Cash        | 753.34   |
+| Savings             |          |
+| - Spouse Savings    | 987.12   |
+| - Family Savings    | 3250     |
+| - Total Savings     | 4237.12  |
+| Property            |          |
+| - 2012 Silverado    | 30975    |
+| - 2012 Camper       | 0        |
+| - Total Property    | 39975    |
+| Total Assets        | 44965.46 |
+| Liabilities         |          |
+| Credit Card         |          |
+| - Apple Card        | 0        |
+| - Credit Card       | -973.4   |
+| - Total Credit Card | -973.4   |
+| Loan                |          |
+| - Student Loan      | -10500   |
+| - Total Loan        | -10650   |
+| Total Liabilities   | -11623   | ~~         |
 
 _Move2GnuCash_ function `opening_book` retrieves the date (balances as of close of business) from the first line. The second line, because it has no associated figure in the second column, will be created as a [placeholder account](https://www.gnucash.org/docs/v4/C/gnucash-help/acct-create.html#accts-placeholder) and will be the parent of the next account created, and so on, until the accounts containing transactions are created (the hyphens will be removed).
 
@@ -56,7 +60,7 @@ The above list of balances will result in an initial [Chart of Accounts](https:/
 
 The `opening_book` function will also create an **Equity** account with a sub-account of **Opening Balances**. This account will be used for the second entry required when an opening balance is recorded in an account. Note that balance equals the sum of the assets and liabilities recorded during the import.
 
-Before running `opening_book`, you may want to use the opening balances file to adjust the account structure. For example, GnuCash typically uses **Current Assets**, **Fixed Assets** and **Investments** as subt-accounts under **Assets**.
+Before running `opening_book`, you may want to use the opening balances file to adjust the account structure. For example, GnuCash typically uses **Current Assets**, **Fixed Assets** and **Investments** as sub-accounts under **Assets**.
 
 If you do change these, make sure to also change the _Total_ line in the file because that is how _Move2GnuCash_ knows when to jump back up the account tree.
 
@@ -125,9 +129,9 @@ In a double entry accounting system, the debits and credits must balance.
 -   [x] Create GnuCash book with accounts and opening balances transaction fixtures.
     -   [x] Write account list to file.
     -   [x] Write transactions list to file.
--   [ ] Map Opening Balances (Net Worth) DataFrame to:
-    -   [ ] Accounts list.
-    -   [ ] Opening Balances transactions list
+-   [x] Map Opening Balances (Net Worth) DataFrame to:
+    -   [x] Accounts list.
+    -   [x] Opening Balances transactions list
 -   [ ] Module to prepare transactions for addition to GnuCash book.
     -   [ ] Create Note/Memos field based on existing notes and tags.
     -   [ ] Identify Quicken split transaction.

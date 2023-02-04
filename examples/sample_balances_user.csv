@@ -1,0 +1,19 @@
+account,type,description,balance,date
+Assets,ASSET,My Assets,,12/31/2016
+Assets:Current Assets,ASSET,My Current Assets,,12/31/2016
+Assets:Current Assets:Cash,CASH,,77.12,12/31/2016
+Assets:Current Assets:Checking Accounts,BANK,,,12/31/2016
+Assets:Current Assets:Checking Accounts:Checking One,BANK,,440.84,12/31/2016
+Assets:Current Assets:Checking Accounts:Checking Two,BANK,,235.38,12/31/2016
+Assets:Current Assets:Savings,BANK,,,12/31/2016
+Assets:Current Assets:Savings:Spouse Savings,BANK,,987.12,12/31/2016
+Assets:Current Assets:Savings:Family Savings,BANK,,3250,12/31/2016
+Assets:Property,ASSET,,,12/31/2016
+Assets:Property:2012 Silverado,ASSET,,30975,12/31/2016
+Assets:Property:2012 Camper,ASSET,,0,12/31/2016
+Liabilities,LIABILITY,,,12/31/2016
+Liabilities:Credit Cards,CREDIT,,,12/31/2016
+Liabilities:Credit Cards:Apple Card,CREDIT,,0,12/31/2016
+Liabilities:Credit Cards:Credit Card,CREDIT,,-973.4,12/31/2016
+Liabilities:Loans,LIABILITY,,,12/31/2016
+Liabilities:Loans:Student Loan,LIABILITY,,-10500,12/31/2016

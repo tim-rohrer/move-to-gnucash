@@ -30,12 +30,12 @@ def test_create_gnucash_book(mock_create_book: Mock):
     WHEN passed to create_gnucash_book and executed
     THEN piecash.create_book will be called with all of the parameters.
     """
-    create_gnucash_book("testfile")
+    create_gnucash_book("testfile", "USD")
 
     mock_create_book.assert_called_once()
 
 
-def test_add_accounts_success(fixture_accounts):
+def test_add_accounts_success(simple_fixture_accounts_out):
     """
     GIVEN a list of five accounts and sub accounts, and a viable book instance
     WHEN executed with add_accounts
@@ -43,15 +43,12 @@ def test_add_accounts_success(fixture_accounts):
     """
     book = create_book(currency="USD")
 
-    create_accounts(book, fixture_accounts)
+    create_accounts(book, simple_fixture_accounts_out)
 
     assert len(book.accounts) == 5
 
 
-#    book.close()  # Recently added, but creates different error
-
-
-def test_add_accounts_success_correct_tree(fixture_accounts):
+def test_add_accounts_success_correct_tree(simple_fixture_accounts_out):
     """
     GIVEN an array of accounts and sub accounts, and a viable book instance
     WHEN executed with add_accounts,
@@ -59,7 +56,7 @@ def test_add_accounts_success_correct_tree(fixture_accounts):
     """
     book = create_book(currency="USD")
 
-    create_accounts(book, fixture_accounts)
+    create_accounts(book, simple_fixture_accounts_out)
 
     added_accounts = list(map(lambda acct: acct.fullname, book.accounts))
     assert "Assets:Current Assets" in added_accounts
@@ -78,10 +75,26 @@ def test_add_transactions_success(fixture_opening_balances_simple):
     book.root_account.children = [
         Account(
             parent=book.root_account,
-            name="Checking",
-            type="BANK",
+            name="Assets",
+            type="ASSET",
             commodity=usd,
-            placeholder=False,
+            placeholder=True,
+            children=[
+                Account(
+                    name="Current Assets",
+                    type="ASSET",
+                    commodity=usd,
+                    placeholder=True,
+                    children=[
+                        Account(
+                            name="Checking",
+                            type="BANK",
+                            commodity=usd,
+                            placeholder=False,
+                        ),
+                    ],
+                )
+            ],
         ),
         Account(
             parent=book.root_account,
@@ -100,10 +113,9 @@ def test_add_transactions_success(fixture_opening_balances_simple):
         ),
     ]
     book.save()
-
     add_transactions(book, fixture_opening_balances_simple)
 
-    account_to_check = book.accounts(fullname="Checking")
+    account_to_check = book.accounts(fullname="Assets:Current Assets:Checking")
     assert account_to_check.get_balance() == fixture_opening_balances_simple[0].splits[0].value
     assert (
         book.accounts(fullname="Equity:Opening Balances").get_balance(natural_sign=False)
