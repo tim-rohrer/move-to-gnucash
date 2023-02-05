@@ -12,6 +12,8 @@ import pandas as pd
 from piecash.core.account import Account
 from piecash.core.commodity import Commodity
 
+from move2gnucash.utils import get_now
+
 
 @dataclass
 class Account2Move:
@@ -89,7 +91,7 @@ def accounts_and_balances(data: pd.DataFrame):
     trans = [
         Transaction2Move(
             post_date=datetime.strptime(tran.date, "%m/%d/%Y").date(),
-            enter_date=datetime.now(),
+            enter_date=get_now(),
             currency=tran.commodity,
             description="Opening Balance",
             notes="",
