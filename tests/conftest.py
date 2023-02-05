@@ -1,12 +1,11 @@
 """conftest.py"""
 from datetime import datetime
-from decimal import Decimal
 from numpy import NaN
 import pytest
 
 import pandas as pd
 
-from move2gnucash.data_maps import Account2Move, Transaction2Move, Split2Move
+from move2gnucash.data_maps import Account2Move, Transaction2Move, Split2Move, decimal_to, get_now
 
 
 @pytest.fixture(scope="module")
@@ -125,14 +124,14 @@ def fixture_opening_balances_simple():
     return [
         Transaction2Move(
             datetime.strptime("12/31/2016", "%m/%d/%Y").date(),
-            datetime.strptime("12/31/2016", "%m/%d/%Y"),
+            datetime(2023, 2, 1, 0, 0, 0),
             "USD",
             "Opening Balance",
             "",
             "",
             [
-                Split2Move("Assets:Current Assets:Checking", Decimal("1000"), ""),
-                Split2Move("Equity:Opening Balances", Decimal("-1000"), ""),
+                Split2Move("Assets:Current Assets:Checking", decimal_to("1000", 2), ""),
+                Split2Move("Equity:Opening Balances", decimal_to("-1000", 2), ""),
             ],
         )
     ]
