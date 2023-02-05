@@ -89,7 +89,7 @@ def accounts_and_balances(data: pd.DataFrame):
     trans = [
         Transaction2Move(
             post_date=datetime.strptime(tran.date, "%m/%d/%Y").date(),
-            enter_date=datetime.strptime(tran.date, "%m/%d/%Y"),
+            enter_date=datetime.now(),
             currency=tran.commodity,
             description="Opening Balance",
             notes="",
