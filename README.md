@@ -122,6 +122,14 @@ trans1 = Transaction(
 
 In a double entry accounting system, the debits and credits must balance.
 
+## Regarding Memos, Notes and Tags
+
+_Move2GnuCash_ captures as much of these three fields as possible, but limitations in Quicken's exporter and GnuCash may result in data loss depending on how you record these in your own system.
+
+GnuCash has a `notes` field with each transaction and a `memo` field for each split. There is no support for tags. To capture the tags, we combine these with a split's `memo`.
+
+Quicken's exporter overwrites an empty split memo/notes field with the contents of the transaction's notes; if the split memo/note is not empty, the transaction note is not applied. The implication is that if all split memos have data, any transaction level note or member will not be exported, and will not migrate to GnuCash.
+
 ## Initial To-Do
 
 -   [x] Read generic csv file contents into a Pandas DataFrame.
