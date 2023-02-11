@@ -1,11 +1,13 @@
 """conftest.py"""
 from datetime import datetime
+from decimal import Decimal
 from numpy import NaN
 import pytest
 
 import pandas as pd
 
-from move2gnucash.data_maps import Account2Move, Transaction2Move, Split2Move, decimal_to, get_now
+from move2gnucash.account_maps import Account2Move
+from move2gnucash.transaction_maps import Transaction2Move, Split2Move
 
 
 @pytest.fixture(scope="module")
@@ -84,15 +86,15 @@ def simple_data_frame_in():
     """
     return pd.DataFrame(
         {
-            "account": [
+            "acct_path_and_name": [
                 "Assets",
                 "Assets:Current Assets",
                 "Assets:Current Assets:Checking",
             ],
-            "description": ["My Assets", "My Current Assets", "My Checking Account"],
-            "type": ["ASSET", "ASSET", "BANK"],
-            "balance": [NaN, NaN, 1000.00],
-            "date": ["12/31/2016", "12/31/2016", "12/31/2016"],
+            "acct_description": ["My Assets", "My Current Assets", "My Checking Account"],
+            "acct_type": ["ASSET", "ASSET", "BANK"],
+            "acct_balance": [NaN, NaN, 1000.00],
+            "acct_balance_date": ["12/31/2016", "12/31/2016", "12/31/2016"],
         }
     )
 
@@ -111,10 +113,8 @@ def simple_fixture_accounts_out():
             False,
             "My Checking Account",
         ),
-        Account2Move("Equity", "EQUITY", "root", "USD", True, "Migration from Quicken"),
-        Account2Move(
-            "Opening Balances", "EQUITY", "Equity", "USD", False, "Migration from Quicken"
-        ),
+        Account2Move("Equity", "EQUITY", "root", "USD", True, ""),
+        Account2Move("Opening Balances", "EQUITY", "Equity", "USD", False, ""),
     ]
 
 
@@ -127,11 +127,29 @@ def fixture_opening_balances_simple():
             datetime(2023, 2, 1, 0, 0, 0),
             "USD",
             "Opening Balance",
-            "",
+            "Migrated by Move2GnuCash",
             "",
             [
-                Split2Move("Assets:Current Assets:Checking", decimal_to("1000", 2), ""),
-                Split2Move("Equity:Opening Balances", decimal_to("-1000", 2), ""),
+                Split2Move(
+                    "Assets:Current Assets:Checking",
+                    Decimal("1000"),
+                    "Migrated by Move2GnuCash",
+                ),
+                Split2Move(
+                    "Equity:Opening Balances",
+                    Decimal("-1000"),
+                    "Migrated by Move2GnuCash",
+                ),
             ],
         )
     ]
+
+
+@pytest.fixture()
+def fixture_transactions_in():
+    """Fixture READ FROM FILE to provide DataFrame reflecting preprocessed csv transactions."""
+    fixture = pd.read_csv("tests/preprocessed_transactions.fixture.csv")
+    fixture[["tran_memo", "tran_split", "tran_tags"]] = fixture[
+        ["tran_memo", "tran_split", "tran_tags"]
+    ].fillna("")
+    return fixture

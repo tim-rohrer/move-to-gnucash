@@ -140,7 +140,9 @@ Quicken's exporter overwrites an empty split memo/notes field with the contents 
 -   [x] Map Opening Balances (Net Worth) DataFrame to:
     -   [x] Accounts list.
     -   [x] Opening Balances transactions list
--   [ ] Module to prepare transactions for addition to GnuCash book.
-    -   [ ] Create Note/Memos field based on existing notes and tags.
-    -   [ ] Identify Quicken split transaction.
--   [ ] Module to add top level account names.
+-   [x] Module to prepare transactions for addition to GnuCash book.
+    -   [x] Create Note/Memos field based on existing notes and tags.
+    -   [x] Identify Quicken split transaction.
+-   [ ] Final processing and writing of info to GnuCash.
+    -   [ ] Accounts from categories.
+    -   [ ] Summary of import.

@@ -5,9 +5,8 @@ import logging
 
 import pandas as pd
 from piecash import Account, Book, create_book, Transaction, Split
-from piecash.core.factories import create_currency_from_ISO
 
-from move2gnucash.data_maps import Split2Move
+from move2gnucash.transaction_maps import Split2Move
 
 logging.basicConfig(level=logging.DEBUG)
 
