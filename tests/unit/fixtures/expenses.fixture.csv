@@ -1,4 +1,4 @@
-tran_split,tran_date,tran_posted,tran_type,tran_action,tran_description,tran_acct_to,tran_tags,tran_transfer,tran_clr,tran_amount,tran_memo,tran_acct_from,tran_fitid
+Split,Date,Posted,Type,Action,Payee,Category,Tags,Transfer,Clr,Amount,Memo/Notes,Account,FITID
 ,1/1/2017,12/30/2016,Payment/Deposit,XFER,John,Education,"college, john, food allowance, room & board, university",,R,-200.00,Transfer to Checking,Checking,201612300900000000002
 ,1/3/2017,1/3/2017,Payment/Deposit,DEBIT,Sam Properties,Education,"college, john, rent, room & board, university",,R,-550.00,,Checking,201701030625000000000
 ,1/3/2017,1/3/2017,Payment/Deposit,DEBIT,Paypal,Other Expense:Membership & Dues,,,R,-24.95,,Checking,201701030625000000001

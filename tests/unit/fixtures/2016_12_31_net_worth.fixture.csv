@@ -1,0 +1,31 @@
+Assets,,
+,Cash,
+, - Cash,77.12
+, - Checking Acct,"440.84"
+, - Total Cash,"517.96"
+,Savings,
+, - Savings Account,"3,000.32"
+, - Total Savings,"3,000.32"
+,Investments,
+, - Brokerage,
+, -  - Joint Brokerage,"3,764.23"
+, -  - U.S. Treasury,0.00
+, -  - Total Brokerage,"3,764.23"
+, - Retirement,
+, -  - Spouse IRA,"40,000.50"
+, -  - Self IRA,"50,000"
+, -  - Total Retirement,"90,000.50"
+, - Total Investments,"93,764.73"
+,Property,
+, - Truck,"10,000.00"
+, - Total Property,"10,000.00"
+,Total Assets,"103,764.73"
+Liabilities,,
+,Credit Card,
+, - Credit Card,"-700.00"
+, - Spouse Credit Card,2.92
+, - Total Credit Card,"-697.08"
+,Loan,
+, - Education Loan,"-10,600.00"
+, - Total Loan,"-10,600.00"
+,Total Liabilities,"-11,297.08"

@@ -1,0 +1,29 @@
+"Income",,
+,"Bank Interest Received","0.40"
+,"Investments",
+," - Dividend Income","500.00"
+," - Interest Income","5.55"
+," - Total Investments","505.55"
+,"Other income (non-taxable)","459.22"
+,"Salary","2,500.00"
+,"Total Income","3,465.17"
+"Expenses",,
+,"Education","-200.00"
+,"Food",
+," - Dining & Drinks","-158.92"
+," - Groceries","-200.00"
+," - Total Food","-358.92"
+,"Housing",
+," - Rent","-500.00"
+," - Repairs & Maintenance","-50.05"
+," - Utilities",
+," -  - Propane","-24.22"
+," - Total Housing","-574.27"
+,"Other Expense",
+," - Misc Expense","-100.00"
+," - Postage","-10.00"
+," - Total Other Expense","-110.00"
+,"Taxes",
+," - Self",
+," -  - Federal","-232.87"
+,"Total Expenses","-1,476.06"
