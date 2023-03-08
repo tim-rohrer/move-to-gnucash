@@ -2,7 +2,7 @@
 
 from unittest.mock import patch
 
-from piecash import Account, Book, create_book
+from piecash import Book, create_book
 
 from move2gnucash.migrations import category_accounts, opening_balances, transactions
 
