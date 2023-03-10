@@ -26,7 +26,9 @@ def fetch_accounts(file_name) -> typing.Dict:
     date_string = string_trimmed_after(file_name, "_", 3)
     return {
         "as_of_date": datetime.strptime(date_string, "%Y_%m_%d").date(),
-        "data": pd.read_csv(file_name, header=None, names=["root", "account", "balance"]),
+        "data": pd.read_csv(
+            file_name, header=None, names=["root", "account", "balance"], thousands=","
+        ),
     }
 
 

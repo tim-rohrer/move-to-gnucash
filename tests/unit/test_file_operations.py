@@ -83,7 +83,7 @@ def test_fetch_accounts(mock_read: Mock):
     res = fetch_accounts("2016_12_31_file.csv")
 
     mock_read.assert_called_once_with(
-        "2016_12_31_file.csv", header=None, names=["root", "account", "balance"]
+        "2016_12_31_file.csv", header=None, names=["root", "account", "balance"], thousands=","
     )
     assert isinstance(res, dict)
     assert res["as_of_date"] == datetime.strptime("2016_12_31", "%Y_%m_%d").date()
