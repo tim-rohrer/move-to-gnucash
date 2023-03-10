@@ -189,8 +189,6 @@ def prepared_transactions(root: str, raw_data: pd.DataFrame) -> pd.DataFrame:
     A string reflecting the root account, (typically "Income" or "Expenses"), must be provided due
     to limitations with Quicken's export file.
     """
-    # TODO pick tran_date based on equality of posted vs date.
-    # Prefer posted unless date exists and is not equal to posted.
 
     config = configparser.ConfigParser()
     config.read("src/move2gnucash/field_mappings.ini")
@@ -211,6 +209,6 @@ def prepared_transactions(root: str, raw_data: pd.DataFrame) -> pd.DataFrame:
         prepared_data.transfer == "", prepared_data.path_and_name, prepared_data.transfer
     )
 
-    prepared_data["tran_date"] = prepared_data["posted"]
+    prepared_data["tran_date"] = prepared_data["date"]
 
     return prepared_data
