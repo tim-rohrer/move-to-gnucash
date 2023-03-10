@@ -51,7 +51,7 @@ def test_category_accounts(mock_fetch, categories) -> None:
     assert len(book.accounts[0].children) == 4
     types: list = [acc.type for acc in book.accounts]
     assert types.count("INCOME") == 7
-    assert types.count("EXPENSE") == 16
+    assert types.count("EXPENSE") == 17
 
     book.close()
 
@@ -60,7 +60,8 @@ def test_category_accounts(mock_fetch, categories) -> None:
 def test_transactions(mock_fetch, detailed_book, expenses) -> None:
     """
     GIVEN a file name referencing a CSV containing a list of transactions,
-        and a PieCash Book instance with necessary accounts in place,
+        a transaction type, and a PieCash Book instance with necessary
+        accounts in place,
     WHEN executed by transactions,
     THEN double entry transactions will be added to the GnuCash book.
     """
@@ -68,6 +69,6 @@ def test_transactions(mock_fetch, detailed_book, expenses) -> None:
 
     book = detailed_book
 
-    transactions("expenses.csv", book)
+    transactions("expenses.csv", "Expenses", book)
 
     assert len(book.transactions) == 6

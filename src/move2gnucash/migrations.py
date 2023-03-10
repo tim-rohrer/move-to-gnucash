@@ -57,11 +57,11 @@ def category_accounts(data_filename: str, book: Book) -> None:
     book.save()
 
 
-def transactions(data_filename: str, book: Book) -> None:
+def transactions(data_filename: str, tran_type: str, book: Book) -> None:
     """Add double entry transactions (usually income or expense) to the book."""
     raw_data: pd.DataFrame = fetch_csv_data(data_filename)
 
-    prepared_data: pd.DataFrame = prepared_transactions("Expenses", raw_data)
+    prepared_data: pd.DataFrame = prepared_transactions(tran_type, raw_data)
 
     mapped_data: list = mapped_transactions(prepared_data)
 
