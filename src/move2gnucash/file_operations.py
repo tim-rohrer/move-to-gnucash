@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 def fetch_csv_data(file_to_open, _header=0):
     """Read all csv contents of file and return DataFrame"""
-    return pd.read_csv(file_to_open, header=_header)
+    return pd.read_csv(file_to_open, header=_header, thousands=",")
 
 
 def fetch_accounts(file_name) -> typing.Dict:
