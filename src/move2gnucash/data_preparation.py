@@ -81,10 +81,15 @@ def _add_account_types_of(accounts: pd.DataFrame) -> None:
         num_candidates = len(candidate_types)
         acct_choice_index = num_candidates - 1 if num_candidates > 0 else 0
         placeholder_choice_index = num_candidates - 2 if num_candidates > 1 else 0
+
         choice = (
-            candidate_types[placeholder_choice_index]
-            if placeholder is True
-            else candidate_types[acct_choice_index]
+            candidate_types[0]
+            if candidate_types[0] in ["INCOME", "EXPENSE"]
+            else (
+                candidate_types[placeholder_choice_index]
+                if placeholder is True
+                else candidate_types[acct_choice_index]
+            )
         )
         return choice
 
@@ -101,7 +106,6 @@ def _add_account_types_of(accounts: pd.DataFrame) -> None:
         "RECEIVABLE": {"ACCOUNTS RECEIVABLE", "RECEIVABLES"},
         "STOCK": {"BROKERAGE"},
         "MUTUAL": {"MUTUAL FUND", "MONEY MARKET FUND", "FUND"},
-        # "NONE": {"OTHER"},
     }
     reversed_dict = {i: k for k, v in account_types.items() for i in v}
 

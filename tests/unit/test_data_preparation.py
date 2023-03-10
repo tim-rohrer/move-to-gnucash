@@ -79,8 +79,9 @@ def test_prepared_category_accounts(categories):
     """
     res: pd.DataFrame = prepared_category_accounts(categories)
 
-    assert len(res) == 23
+    assert len(res) == 24
     assert all(w in res.columns for w in ["placeholder", "commodity", "name", "parent"])
+    assert all(w in ["INCOME", "EXPENSE"] for w in res.selected_type.to_list())
 
 
 def test_prepared_transactions(expenses):
