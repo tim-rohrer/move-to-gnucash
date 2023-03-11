@@ -73,6 +73,7 @@ def test_string_trimmed_before():
     test_string = "foo:bar:doo:day"
     assert string_trimmed_before(test_string, ":") == "day"
     assert string_trimmed_before(test_string, ":", 1) == "bar:doo:day"
+    assert string_trimmed_before("foo", ":") == "foo"
 
 
 def test_hierarchy_from():
