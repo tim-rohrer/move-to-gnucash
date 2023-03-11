@@ -41,11 +41,20 @@ def custom_join(strings: Series) -> LiteralString | Literal[""]:
 def string_trimmed_after(string: str, delimiter: str, occurrences=0) -> str:
     """Function to trim a string after the nth occurrence of the specified delimiter.
 
-    If occurrence == 0, only the last word/segment is trimmed.
+    If occurrences == 0, only the last word/segment is trimmed.
     """
     groups: list[str] = string.split(delimiter)
     n_th: int = occurrences if occurrences >> 0 else len(groups) - 1
     return delimiter.join((string.split(delimiter))[:n_th])
+
+
+def string_trimmed_before(string: str, delimiter, occurrences=0) -> str:
+    """Function to trim a string before the nth occurrence of the specified delimiter.
+
+    If occurrences = 0, only the last word/segment is returned."""
+    groups: list[str] = string.split(delimiter)
+    n_th: int = occurrences if occurrences >> 0 else len(groups) - 1
+    return delimiter.join((groups)[n_th:])
 
 
 def hierarchy_from(delimited_words: str) -> list[str]:

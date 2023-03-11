@@ -10,6 +10,7 @@ from move2gnucash.utils import (
     decimal_to,
     hierarchy_from,
     string_trimmed_after,
+    string_trimmed_before,
 )
 
 
@@ -48,6 +49,30 @@ def test_custom_join():
     assert custom_join(pd.Series(["Foo", "Bar"])) == ":Foo:Bar"
     assert custom_join(pd.Series(["Foo", "", ""])) == ":Foo"
     assert custom_join(pd.Series([""])) == ""
+
+
+def test_string_trimmed_after():
+    """
+    GIVEN a string of words separated by a specified delimiter and a specified number of occurrences,
+    WHEN executed by string_trimmed_after,
+    THEN a literal string is returned comprised of the left hand part of the original string
+        before the nth occurrence of the delimiter.
+    """
+    test_string = "foo:bar:doo:day"
+    assert string_trimmed_after(test_string, ":") == "foo:bar:doo"
+    assert string_trimmed_after(test_string, ":", 1) == "foo"
+
+
+def test_string_trimmed_before():
+    """
+    GIVEN a string of words separated by a specified delimiter and a specified number of occurrences,
+    WHEN executed by string_trimmed_before,
+    THEN a literal string is returned comprised of the right hand part of the original string
+        after the nth occurrence of the delimiter.
+    """
+    test_string = "foo:bar:doo:day"
+    assert string_trimmed_before(test_string, ":") == "day"
+    assert string_trimmed_before(test_string, ":", 1) == "bar:doo:day"
 
 
 def test_hierarchy_from():
