@@ -85,3 +85,8 @@ def hierarchy_from(delimited_words: str) -> list[str]:
 def get_now():
     """Wrapper to provide now(), mainly in support of code testing"""
     return datetime.now()
+
+
+def full_string_from_sub(the_list: list, sub_str: str) -> list:
+    """Function to return list of entries in the_list which contain sub_str."""
+    return [s for s in the_list if sub_str in s]

@@ -1,8 +1,6 @@
 """test_utils.py"""
-from datetime import datetime
 from decimal import Decimal
 import pandas as pd
-import pytest
 
 from move2gnucash.utils import (
     combined_strings_by,
@@ -11,6 +9,7 @@ from move2gnucash.utils import (
     hierarchy_from,
     string_trimmed_after,
     string_trimmed_before,
+    full_string_from_sub,
 )
 
 
@@ -85,3 +84,22 @@ def test_hierarchy_from():
     """
 
     assert hierarchy_from("Foo:Bar:Boo") == [("Foo", 2), ("Foo:Bar", 1), ("Foo:Bar:Boo", 0)]
+
+
+def test_full_string_from_sub():
+    """
+    GIVEN a substring and a list of strings,
+    WHEN passed to full_string_from_sub,
+    THEN a best matching full set of words is returned.
+    """
+    test_list = [
+        "Assets:Cash",
+        "Income:Salary",
+        "Income:Other",
+        "Expenses:Food:Dining",
+        "Expenses:Other",
+    ]
+
+    assert full_string_from_sub(test_list, "Food:Dining") == ["Expenses:Food:Dining"]
+    assert len(full_string_from_sub(test_list, "Other Income")) == 0
+    assert len(full_string_from_sub(test_list, "Other")) == 2
