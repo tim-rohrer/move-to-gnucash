@@ -7,13 +7,13 @@ import pytest
 
 
 @pytest.fixture()
-def expenses():
+def all_transactions():
     """
     Fixture READ FROM FILE to provide DataFrame reflecting
     preprocessed csv transactions (tran).
     """
 
-    return pd.read_csv("tests/unit/fixtures/expenses.fixture.csv")
+    return pd.read_csv("tests/unit/fixtures/inc_exp_trans.fixture.csv", thousands=",")
 
 
 @pytest.fixture()

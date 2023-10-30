@@ -6,10 +6,10 @@ from move2gnucash.utils import (
     combined_strings_by,
     custom_join,
     decimal_to,
+    full_string_right_match,
     hierarchy_from,
     string_trimmed_after,
     string_trimmed_before,
-    full_string_from_sub,
 )
 
 
@@ -86,10 +86,10 @@ def test_hierarchy_from():
     assert hierarchy_from("Foo:Bar:Boo") == [("Foo", 2), ("Foo:Bar", 1), ("Foo:Bar:Boo", 0)]
 
 
-def test_full_string_from_sub():
+def test_full_string_right_match():
     """
     GIVEN a substring and a list of strings,
-    WHEN passed to full_string_from_sub,
+    WHEN passed to full_string_right_match,
     THEN a best matching full set of words is returned.
     """
     test_list = [
@@ -100,6 +100,18 @@ def test_full_string_from_sub():
         "Expenses:Other",
     ]
 
-    assert full_string_from_sub(test_list, "Food:Dining") == ["Expenses:Food:Dining"]
-    assert len(full_string_from_sub(test_list, "Other Income")) == 0
-    assert len(full_string_from_sub(test_list, "Other")) == 2
+    assert full_string_right_match(test_list, "Food:Dining") == ["Expenses:Food:Dining"]
+    assert len(full_string_right_match(test_list, "Food")) == 0
+    assert len(full_string_right_match(test_list, "Other Income")) == 0
+    assert len(full_string_right_match(test_list, "Other")) == 2
+
+
+# def my_finder(sub):
+
+
+# def test_my_finder():
+#     assert len(my_finder("Bar:Doo")) == 1
+#     x = my_finder("Boo")
+
+#     assert len(my_finder("Boo")) == 2
+#     assert len(my_finder("Baz")) == 0

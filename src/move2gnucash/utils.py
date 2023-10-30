@@ -87,6 +87,17 @@ def get_now():
     return datetime.now()
 
 
-def full_string_from_sub(the_list: list, sub_str: str) -> list:
-    """Function to return list of entries in the_list which contain sub_str."""
-    return [s for s in the_list if sub_str in s]
+def full_string_right_match(the_list: list, sub_str: str) -> list:
+    """Function to return list of entries in the_list which contain sub_str starting on the far right."""
+    matches = []
+    sub_split = sub_str.rsplit(":")
+    sub_split_last_element = sub_split[len(sub_split) - 1]
+
+    all_matches = [s for s in the_list if sub_str in s]
+
+    for s in all_matches:
+        test_split = s.rsplit(":")
+        test_split_last_element = test_split[len(test_split) - 1]
+        if test_split_last_element == sub_split_last_element:
+            matches.append(s)
+    return matches

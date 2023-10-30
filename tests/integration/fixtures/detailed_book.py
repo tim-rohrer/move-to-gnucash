@@ -1,7 +1,8 @@
 """Fixtures supporting integration tests with GnuCash books"""
+from datetime import datetime
 import pytest
 
-from piecash import Account, create_book
+from piecash import Account, create_book, Transaction, Split
 
 
 @pytest.fixture
@@ -18,7 +19,7 @@ def detailed_book():
             placeholder=True,
             children=[
                 Account(
-                    name="Current Assets",
+                    name="Cash",
                     type="ASSET",
                     commodity=usd,
                     placeholder=True,
@@ -36,7 +37,14 @@ def detailed_book():
                             placeholder=False,
                         ),
                     ],
-                )
+                ),
+                Account(
+                    name="Investments",
+                    type="ASSET",
+                    commodity=usd,
+                    placeholder=True,
+                    children=[Account(name="IRA", type="STOCK", commodity=usd, placeholder=False)],
+                ),
             ],
         ),
         Account(
@@ -52,6 +60,16 @@ def detailed_book():
                     commodity=usd,
                     placeholder=False,
                 )
+            ],
+        ),
+        Account(
+            parent=book.root_account,
+            name="Income",
+            type="INCOME",
+            commodity=usd,
+            placeholder=True,
+            children=[
+                Account(name="Salary", type="INCOME", commodity=usd, placeholder=False),
             ],
         ),
         Account(
@@ -137,8 +155,23 @@ def detailed_book():
                         ),
                     ],
                 ),
+                Account(
+                    name="Uncategorized",
+                    type="EXPENSE",
+                    commodity=usd,
+                    placeholder=False,
+                ),
             ],
         ),
     ]
+    book.flush()
+    checking = book.accounts(fullname="Assets:Cash:Checking")
+    opening_balances = book.accounts(fullname="Equity:Opening Balances")
+    Transaction(
+        currency=usd,
+        description="Opening Balances",
+        post_date=datetime(2016, 12, 31).date(),
+        splits=[Split(account=checking, value=-100), Split(account=opening_balances, value=100)],
+    )
     book.save()
     yield book

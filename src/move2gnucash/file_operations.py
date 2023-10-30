@@ -9,7 +9,7 @@ import pandas as pd
 from piecash import Account, Book, create_book, Transaction, Split
 
 from move2gnucash.data_maps import Split2Move
-from move2gnucash.utils import string_trimmed_after
+from move2gnucash.utils import string_trimmed_after, string_trimmed_before
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -77,7 +77,7 @@ def add_transactions(book: Book, transactions_list: pd.DataFrame) -> None:
         try:
             return book.accounts(fullname=fullname)
         except KeyError:
-            name = fullname
+            name = string_trimmed_before(fullname, ":")  # Remove any hierarchy.
             return get_acct_reference_name(name)
 
     def build_split(split_params: Split2Move):

@@ -3,12 +3,15 @@ Contains the functions that work with Pandas DataFrames to to prepare raw data
 into columns ready for mapping and subsequent file operations. 
 """
 import configparser
+from datetime import datetime
 import re
+from typing import Dict
 
 import numpy as np
 import pandas as pd
+from piecash import Book
 
-from move2gnucash.utils import combined_strings_by, custom_join
+from move2gnucash.utils import combined_strings_by, custom_join, full_string_right_match
 
 
 def _parent_of(col: pd.Series) -> pd.Series:
@@ -81,10 +84,9 @@ def _add_account_types_of(accounts: pd.DataFrame) -> None:
         num_candidates = len(candidate_types)
         acct_choice_index = num_candidates - 1 if num_candidates > 0 else 0
         placeholder_choice_index = num_candidates - 2 if num_candidates > 1 else 0
-
         choice = (
             candidate_types[0]
-            if candidate_types[0] in ["INCOME", "EXPENSE"]
+            if candidate_types[0] in ["INCOME", "EXPENSE", "OTHER"]
             else (
                 candidate_types[placeholder_choice_index]
                 if placeholder is True
@@ -98,7 +100,7 @@ def _add_account_types_of(accounts: pd.DataFrame) -> None:
         "LIABILITY": {"LIABILITY", "LIABILITIES"},
         "EQUITY": {"EQUITY", "EQUITIES"},
         "INCOME": {"INCOME", "INCOMES"},
-        "EXPENSE": {"EXPENSE", "EXPENSES"},
+        "EXPENSE": {"EXPENSE", "EXPENSES", "ADJUSTMENT"},
         "CASH": {"CASH"},
         "BANK": {"CHECKING", "ACCOUNT"},
         "CREDIT": {"CREDIT CARD", "CREDIT CARDS"},
@@ -106,6 +108,7 @@ def _add_account_types_of(accounts: pd.DataFrame) -> None:
         "RECEIVABLE": {"ACCOUNTS RECEIVABLE", "RECEIVABLES"},
         "STOCK": {"BROKERAGE"},
         "MUTUAL": {"MUTUAL FUND", "MONEY MARKET FUND", "FUND"},
+        "TRADING": {"OTHER"},
     }
     reversed_dict = {i: k for k, v in account_types.items() for i in v}
 
@@ -121,7 +124,7 @@ def _add_account_types_of(accounts: pd.DataFrame) -> None:
     )
 
 
-def prepared_balances(raw_data: pd.DataFrame) -> pd.DataFrame:
+def prepared_balances(raw_data: Dict) -> pd.DataFrame:
     """
     Provides a Pandas DataFrame of account data and balances prepared from a raw list
     of account data/balances imported from Quicken's exported balances report.
@@ -130,7 +133,7 @@ def prepared_balances(raw_data: pd.DataFrame) -> pd.DataFrame:
     and the transactions necessary to create balances in GnuCash, specifically opening
     balances.
     """
-    named_accounts = _prepared_account_names(raw_data)
+    named_accounts = _prepared_account_names(raw_data["data"])
 
     prepared_data = named_accounts[["path_and_name", "balance"]].reset_index(drop=True)
     prepared_data["placeholder"] = prepared_data["balance"].isna()
@@ -148,8 +151,9 @@ def prepared_balances(raw_data: pd.DataFrame) -> pd.DataFrame:
     prepared_data["tran_split"] = ""
     prepared_data["tran_acct_from"] = "Opening Balances"
     prepared_data["tran_amount"] = prepared_data["balance"].astype(float)
+    prepared_data.loc[prepared_data.selected_type == "STOCK", "tran_amount"] = 0
     prepared_data["tran_memo"] = prepared_data.description
-    prepared_data["tran_date"] = "12/31/2016"
+    prepared_data["tran_date"] = raw_data["as_of_date"]
     prepared_data["tran_num"] = 1
 
     return prepared_data
@@ -181,7 +185,70 @@ def _combined_memo_tags(_: pd.DataFrame) -> str:
     return combined_strings_by(memo_notes, tags, ";")
 
 
-def prepared_transactions(root: str, raw_data: pd.DataFrame) -> pd.DataFrame:
+def _list_of_candidates(candidate: str, existing: list[str]):
+    match = full_string_right_match(existing, candidate)
+    if len(match) == 0:
+        raise ValueError(f"Failure. Missing account for {candidate}")
+    return match
+
+
+def _manual_choice(options: list[str]) -> str:
+    print("Why here?")
+    user_input = ""
+
+    input_message = "\nThe desired 'to' account is unclear. Please choose from the following:\n"
+
+    for index, item in enumerate(options):
+        input_message += f"{index+1}) {item}\n"
+
+    input_message += "Choice: "
+
+    while user_input not in map(str, range(1, len(options) + 1)):
+        user_input = input(input_message)
+
+    print(f"You picked: {options[int(user_input) - 1]}")
+    return options[int(user_input) - 1]
+
+
+def _chosen_acct(candidates: list):
+    num_candidates = len(candidates)
+    if num_candidates > 1:
+        return _manual_choice(candidates)
+    if num_candidates == 1:
+        return candidates[0]
+    if num_candidates == 0:
+        print("Shouldn't be here!")
+    return candidates
+
+
+def _account_from(book: Book, accounts: pd.Series) -> pd.Series:
+    existing_accounts = [acct.fullname for acct in book.accounts if not acct.placeholder]
+    for x in accounts:
+        if len(x) == 0:
+            print("No accounts")
+    candidates = accounts.apply(_list_of_candidates, args=(existing_accounts,))
+
+    final = candidates.apply(_chosen_acct)
+    return final
+
+
+def _as_date_object(date_input):
+    return datetime.strptime(date_input, "%m/%d/%Y").date()
+
+
+def _prepared_non_invest(book: Book, non_invest_trans: pd.DataFrame) -> pd.DataFrame:
+    non_invest_trans.reset_index(inplace=True)
+    non_invest_trans["tran_acct_to"] = _account_from(book, non_invest_trans.account)
+    non_invest_trans["tran_acct_from"] = _account_from(book, non_invest_trans.acct_from)
+    return non_invest_trans
+
+
+def _prepared_invest(book: Book, invest_trans: pd.DataFrame) -> pd.DataFrame:
+    invest_trans["invest_acct"] = _account_from(book, invest_trans.acct_from)
+    return invest_trans
+
+
+def prepared_transactions(book: Book, raw_data: pd.DataFrame) -> pd.DataFrame:
     """
     Provides a Pandas DataFrame of transaction data prepared from a raw list of income or expense
     transactions imported from Quicken's transaction export -> csv feature.
@@ -194,21 +261,32 @@ def prepared_transactions(root: str, raw_data: pd.DataFrame) -> pd.DataFrame:
     config.read("src/move2gnucash/field_mappings.ini")
     prepared_data = _mapped_column_names(raw_data, config["transactions"])
 
-    prepared_data.fillna("", inplace=True)
-    prepared_data["tran_num"] = prepared_data.fitid
+    prepared_data["tran_date"] = prepared_data.date.apply(_as_date_object)
+
+    balance_date = book.transactions[0].post_date
+    prepared_data = prepared_data.loc[
+        (prepared_data.tran_date > balance_date)
+        | (prepared_data.account.str.startswith("Investments:"))
+    ].reset_index(drop=True)
+
+    prepared_data.fillna("", inplace=True)  # Both
+    prepared_data["tran_num"] = prepared_data.fitid  # Both
     prepared_data["tran_memo"] = prepared_data[["memo_notes", "tags"]].agg(
         _combined_memo_tags, axis=1
     )
-
-    prepared_data["root"] = root
-    _prepared_account_names(prepared_data)
+    prepared_data["tran_amount"] = prepared_data.tran_amount.apply(lambda x: x * -1)
 
     # Next line should handle internal transfers contained in Quicken data by
     # assigning the Transfer name to tran_acct_to when the former is defined.
-    prepared_data["tran_acct_to"] = np.where(
-        prepared_data.transfer == "", prepared_data.path_and_name, prepared_data.transfer
+    prepared_data.loc[
+        prepared_data["account"].str.startswith("Transfer:"), "account"
+    ] = prepared_data.transfer
+
+    non_invest_data = _prepared_non_invest(
+        book, prepared_data.query("~account.str.startswith('Investments:')")
+    )
+    invest_data = _prepared_invest(
+        book, prepared_data.query("account.str.startswith('Investments:')")
     )
 
-    prepared_data["tran_date"] = prepared_data["date"]
-
-    return prepared_data
+    return {"non_invest": non_invest_data, "invest": invest_data}

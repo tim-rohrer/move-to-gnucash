@@ -9,7 +9,7 @@ from datetime import datetime
 from decimal import Decimal
 from unittest.mock import patch, Mock
 
-from piecash import Account, create_book
+from piecash import Account, create_book, Book, factories, Commodity
 
 from move2gnucash.file_operations import (
     fetch_categories,
@@ -20,9 +20,9 @@ from move2gnucash.file_operations import (
 )
 
 
-def setup_basic_book():
+def setup_basic_book() -> Book:
     """Creates basic book to support tests below."""
-    book = create_book(currency="USD")
+    book: Book = create_book(currency="USD")
     usd = book.commodities(mnemonic="USD")
     book.root_account.children = [
         Account(
@@ -110,7 +110,7 @@ def test_fetch_categories(mock_read: Mock):
 #############################
 
 
-# Book creation
+# Book creation NOT USED
 @patch("move2gnucash.file_operations.create_book")
 def test_create_gnucash_book(mock_create_book: Mock):
     """
@@ -130,7 +130,7 @@ def test_add_accounts(new_accounts_list):
     WHEN executed with add_accounts
     THEN three new accounts will be added, if unique.
     """
-    book = create_book(currency="USD")
+    book: Book = create_book(currency="USD")
 
     create_accounts(book, new_accounts_list)
 
@@ -143,7 +143,7 @@ def test_add_accounts_correct_tree(new_accounts_list):
     WHEN executed with add_accounts,
     THEN the list of accounts will have the correct parent/child structure
     """
-    book = create_book(currency="USD")
+    book: Book = create_book(currency="USD")
 
     create_accounts(book, new_accounts_list)
 
@@ -157,10 +157,10 @@ def test_add_accounts_correct_tree(new_accounts_list):
 def test_add_transactions(transaction_simple):
     """
     GIVEN a book with a chart of accounts, and a list of mapped transaction objects
-    WHEN executed with create_transactions
+    WHEN executed with add_transactions
     THEN the book will double entries with the correct balances.
     """
-    book = setup_basic_book()
+    book: Book = setup_basic_book()
 
     add_transactions(book, transaction_simple)
 
@@ -177,11 +177,52 @@ def test_add_transactions(transaction_simple):
 def test_add_transaction_shorter_name_only(transaction_using_short_acct_name):
     """
     GIVEN the user imports transaction data with shorter names for accounts
-    WHEN add_transaction tries to create the account reference
+    WHEN add_transactions tries to create the account reference
     THEN the account will be found and referenced by short name.
     """
-    book = setup_basic_book()
+    book: Book = setup_basic_book()
 
     add_transactions(book, transaction_using_short_acct_name)
 
     assert book.accounts(name="Checking").get_balance() == Decimal(1000)
+
+
+def test_add_investment_transaction() -> None:
+    """
+    GIVEN the user's import includes an investments:add shares of XYZ that are processed
+        by the preparer and mappers
+    WHEN executed by add_transactions with a book,
+    THEN the stock sub-account for XYZ is created.
+    """
+    book: Book = setup_basic_book()
+    usd = book.commodities(mnemonic="USD")
+    # book["base_currency"] = usd
+    asset_acct = book.accounts(fullname="Assets")
+    brokerage = Account(
+        name="Brokerage", type="ASSET", parent=asset_acct, commodity=usd, placeholder=False
+    )
+    income = Account(
+        name="Investment Income",
+        type="INCOME",
+        parent=book.root_account,
+        commodity=usd,
+        placeholder=False,
+    )
+
+    xyz = Commodity(
+        namespace="Stocks",
+        mnemonic="XYZ",
+        fullname="XYZ, Inc.",
+        fraction=10000,
+        book=book,
+    )
+    xyz["base_currency"] = usd
+    # xyz.quoted_currency = {"XYZ": usd}
+    # print(xyz.__dict__.keys())
+    # print(xyz.__dict__.values())
+    # xyz.base_currency = usd
+
+    book.save()
+
+    print(factories.create_stock_accounts(xyz, brokerage, income))
+    # add_transactions(book, )

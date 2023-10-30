@@ -35,7 +35,7 @@ def opening_balances(data_filename: str, book: Book) -> None:
     """Do something"""
     raw_data = fetch_accounts(data_filename)
 
-    prepared_data = prepared_balances(raw_data["data"])
+    prepared_data = prepared_balances(raw_data)
 
     res = _new_book_data(prepared_data)
 
@@ -57,11 +57,11 @@ def category_accounts(data_filename: str, book: Book) -> None:
     book.save()
 
 
-def transactions(data_filename: str, tran_type: str, book: Book) -> None:
+def transactions(data_filename: str, book: Book) -> None:
     """Add double entry transactions (usually income or expense) to the book."""
     raw_data: pd.DataFrame = fetch_csv_data(data_filename)
 
-    prepared_data: pd.DataFrame = prepared_transactions(tran_type, raw_data)
+    prepared_data: pd.DataFrame = prepared_transactions(book, raw_data)
 
     mapped_data: list = mapped_transactions(prepared_data)
 

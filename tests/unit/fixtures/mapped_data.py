@@ -15,7 +15,7 @@ from move2gnucash.data_maps import Account2Move, Transaction2Move, Split2Move
 
 
 @pytest.fixture()
-def transaction_using_short_acct_name():
+def transaction_using_short_acct_name() -> list[Transaction2Move]:
     """
     Fixture providing example of a short name transaction
 
@@ -44,6 +44,14 @@ def transaction_using_short_acct_name():
             ],
         )
     ]
+
+
+@pytest.fixture()
+def transaction_add_shares_xyz() -> list[Transaction2Move]:
+    """
+    Fixture providing add shares transaction of security XYZ
+    """
+    return [Transaction2Move()]
 
 
 @pytest.fixture()

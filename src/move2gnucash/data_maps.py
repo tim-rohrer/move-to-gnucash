@@ -50,13 +50,13 @@ class Transaction2Move:
 def _split2move_list(split):
     return [
         Split2Move(
-            split["tran_acct_from"],  # Set to path_and_name for look up
-            decimal_to(-split["tran_amount"]),
+            split["tran_acct_from"],
+            decimal_to(split["tran_amount"]) * -1,
             split.tran_memo,
         ),
         Split2Move(
             split["tran_acct_to"],
-            decimal_to(split["tran_amount"]),
+            decimal_to(split["tran_amount"]) * 1,
             split.tran_memo,
         ),
     ]
@@ -76,11 +76,12 @@ def _transaction2move(
     )
 
 
-def _build_multi_splits_tran(split_group):
+def _build_multi_splits_tran(split_group: pd.DataFrame):
     splits = split_group.apply(_split2move_list, axis=1)
     splits_list = [elem for item in splits for elem in item]
+
     return _transaction2move(
-        posted=datetime.strptime(split_group["tran_date"].iat[0], "%m/%d/%Y").date(),
+        posted=split_group["tran_date"].iat[0],
         description=split_group.tran_description.iat[0],
         notes=split_group.tran_memo.iat[0],
         num=split_group.tran_num.iat[0],
@@ -91,7 +92,7 @@ def _build_multi_splits_tran(split_group):
 def _build_single_splits_tran(split_data: pd.Series) -> Transaction2Move:
     splits_list = _split2move_list(split_data)
     return _transaction2move(
-        posted=datetime.strptime(split_data["tran_date"], "%m/%d/%Y").date(),
+        posted=split_data.tran_date,
         description=split_data["tran_description"],
         notes=split_data["tran_memo"],
         num=split_data["tran_num"],
@@ -123,6 +124,7 @@ def _processed_transactions(transactions: pd.DataFrame):
         if len(single_splits_data) > 0
         else []
     )
+
     return multi_split_transactions + single_split_transactions
 
 

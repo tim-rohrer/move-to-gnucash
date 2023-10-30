@@ -65,7 +65,7 @@ def test_map_single_split_transactions(prepared_transactions):
 
     assert len(result) == 4
     assert result[0].num == "201612300900000000002"
-    assert result[0].splits[0].value == Decimal(200.00)
+    assert result[0].splits[0].value == Decimal(+200.00)
     assert result[0].splits[1].account == "Expenses:Education"
     assert result[0].splits[1].value == Decimal(-200.00)
     assert (
