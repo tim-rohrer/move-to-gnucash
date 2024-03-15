@@ -7,7 +7,7 @@ name = "pypi"
 pandas = "*"
 pathlib = "*"
 piecash = "*"
-move2gnucash = {editable = true, path = "."}
+move2gnucash = {file = ".", editable = true}
 
 [dev-packages]
 pytest = "*"
